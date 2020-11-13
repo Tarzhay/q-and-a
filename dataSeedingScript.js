@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {sampleQAData} = require('./sample_data.js');
 
 mongoose.connect('mongodb://localhost/FEC', {useNewUrlParser: true});
 
@@ -6,7 +7,10 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   // we're connected!
+  console.log('DB Connected');
 });
+
+
 
 var qaSchema = new mongoose.Schema({
   _id: 'number',
@@ -35,19 +39,25 @@ var qaSchema = new mongoose.Schema({
 const QaModel = mongoose.model('QaModel', qaSchema);
 
 
-//retrieve data for a specific product_id
-let find = (productId, callback) => {
-
-  var query =QaModel.find({"productId":productId},(err, data) => {
-    if(err) {
-      console.log(err);
-    } else {
-      //console.log(JSON.stringify(data));
-      callback(data);
+const seed = () => {
+  // Product.insertMany()
+  QaModel.insertMany(sampleQAData, (err, product) => {
+    if (err) return console.log(err)
+    else {
+      console.log('sampleQAData saved successfully');
+      mongoose.connection.close();
     }
   });
-
-  //.sort({watchersCount:-1}).limit(25);
 }
 
-module.exports = { find: find };
+mongoose.connect('mongodb://localhost/FEC', {
+  useUnifiedTopology: true,
+  useNewUrlParser: true
+})
+  .then(() => console.log('MongoDB connected!'))
+  .catch(err => console.log(err));
+  QaModel.deleteMany({})
+  .then(() =>{
+    console.log('Data Deleted');
+    seed();
+  });
