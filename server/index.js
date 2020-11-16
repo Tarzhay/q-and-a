@@ -2,14 +2,27 @@ const express = require('express');
 let app = express();
 let db = require('../database/index.js');
 var bodyParser = require('body-parser');
+var path = require('path');
 const port = 3000;
 
-//app.use(express.static(__dirname + '/../client/dist'));
+app.use(express.static(__dirname + '/../client/dist'));
 
 //app.use(bodyParser.json());
 
+app.get('/:id', (req, res) => {
+
+  // console.log('I am here');
+  // console.log(__dirname + '/../client/dist/index.html');
+
+  var options = {
+    root: path.join(__dirname, '/../client/dist')
+  }
+
+  res.sendFile('index.html', options);
+})
+
 //Retrieve Question and Answer information
-app.get('/api/:id/Q_A', function (req, res) {
+app.get('/:id/api/Q_A', function (req, res) {
   //console.log(req);
   var productId = req.params.id;
   db.find(productId, (qa) => {
