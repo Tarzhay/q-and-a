@@ -50,4 +50,34 @@ let find = (productId, callback) => {
   //.sort({watchersCount:-1}).limit(25);
 }
 
-module.exports = { find: find };
+//retrieve data for a specific product_id
+let saveQuestion = (productId, callback) => {
+
+  var query =QaModel.find({"productId":productId},(err, data) => {
+    if(err) {
+      console.log(err);
+    } else {
+      //console.log(JSON.stringify(data));
+      callback(data);
+    }
+  });
+
+  //.sort({watchersCount:-1}).limit(25);
+}
+
+//retrieve data for a specific product_id
+let saveAnswer = (productId, callback) => {
+
+  var query =QaModel.find({"productId":productId},(err, data) => {
+    if(err) {
+      console.log(err);
+    } else {
+      //console.log(JSON.stringify(data));
+      callback(data);
+    }
+  });
+
+  //.sort({watchersCount:-1}).limit(25);
+}
+
+module.exports = { find: find , saveAnswer: saveAnswer, saveQuestion: saveQuestion};
