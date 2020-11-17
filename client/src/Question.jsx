@@ -41,7 +41,9 @@ class Question extends React.Component {
     //send the question, screen name, date tot he server
     //inside the server update the product's question array with a new question based on the product ID
 
-    var question = this.state.question;
+    var question = this.question;
+
+    console.log(question);
     var questionId = question.questionId;
     var answerId = question.answers.length + 1;
     var answer = this.state.answer;
@@ -63,8 +65,11 @@ class Question extends React.Component {
     notHelpful: 0};
 
     question.answers.unshift(ansObj);
+    this.setState({question: question});
+    this.setState({toggleAnswer: false, answer: '',
+    ansScrNm: ''});
 
-    axios.post(`/${window.location.pathname}/api/Q_A/answer`, {questionId: questionId, ansObj: ansObj})
+    axios.post(`http://localhost:3000/${window.location.pathname}/api/Q_A/answer`, {questionId: questionId, ansObj: ansObj})
     .then((response) => {
       console.log(response.data);
       this.setState({question: question});

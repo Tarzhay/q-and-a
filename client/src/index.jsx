@@ -66,8 +66,11 @@ class App extends React.Component {
     };
 
     questions.unshift(queObj);
+    this.setState({questions: questions});
+    this.setState({toggleAnswer: false, question: '',
+    queScrNm: ''});
 
-    axios.post(`/${window.location.pathname}/api/Q_A/question`, queObj)
+    axios.post(`http://localhost:3000/${window.location.pathname}/api/Q_A/question`, queObj)
     .then((response) => {
       console.log(response.data);
       this.setState({questions: questions});
