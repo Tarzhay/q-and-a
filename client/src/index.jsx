@@ -2,7 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import data from '../sample_data_v1_2r.js';
 import Question from './Question.jsx';
+import AskQuestion from './AskQuestion.jsx';
 import axios from 'axios';
+import today from './Today.js';
 
 
 class App extends React.Component {
@@ -20,6 +22,7 @@ class App extends React.Component {
     this.submitQuestion = this.submitQuestion.bind(this);
     this.onChangeQue = this.onChangeQue.bind(this);
     this.onChangeQueScrNm = this.onChangeQueScrNm.bind(this);
+    this.getData = this.getData.bind(this);
   }
 
   handleQuestion() {
@@ -38,6 +41,17 @@ class App extends React.Component {
     this.setState({queScrNm: e.target.value});
   }
 
+  getData(lowerLimit) {
+    axios.get(`http://localhost:3000${window.location.pathname}/api/Q_A/question`, queObj)
+    .then((response) => {
+      console.log(response.data);
+      this.setState({questions: response.data});
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }
+
   submitQuestion() {
     //do something
     //read teh content in the text box
@@ -49,13 +63,6 @@ class App extends React.Component {
     var question = this.state.question;
     var queScrNm = this.state.queScrNm;
 
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
-
-    today = yyyy + '-' + mm + '-' + dd;
-
     var queObj = {
       _id: questionId,
       questionId: questionId,
@@ -65,12 +72,16 @@ class App extends React.Component {
       answers: []
     };
 
-    questions.unshift(queObj);
+    //console.log('queObj',queObj);
+
+    questions.push(queObj);
     this.setState({questions: questions});
     this.setState({toggleAnswer: false, question: '',
     queScrNm: ''});
 
-    axios.post(`http://localhost:3000/${window.location.pathname}/api/Q_A/question`, queObj)
+    //console.log('questions',questions);
+
+    axios.post(`http://localhost:3000${window.location.pathname}/api/Q_A`, queObj)
     .then((response) => {
       console.log(response.data);
       this.setState({questions: questions});
@@ -78,8 +89,6 @@ class App extends React.Component {
     .catch((err) => {
       console.log(err);
     })
-
-
     this.setState({toggleQuestion: false});
   }
 
@@ -94,25 +103,20 @@ class App extends React.Component {
     var onChangeQue = this.onChangeQue;
     var onChangeQueScrNm = this.onChangeQueScrNm;
 
+    console.log('render questions', questions);
+
 
     return (
-      <div>
-        <div> Q&A</div>
+      <div className = 'qa-parent'>
+        <div className = 'qa-child'>
+        <div className ='qa bold'> Q&A</div>
         <div>
           {questions.map((question) => (<Question question = {question} />))}
-          <button onClick = {handleQuestion}>Ask a question</button>
+          <button className='white-btn'>Load more questions</button>
+          <button className='red-btn' onClick = {handleQuestion}>Ask a question</button>
           <div>{
-            toggleQuestion? (<div> <div> Your question </div>
-              <div><textarea value = {question} onChange ={onChangeQue}> </textarea></div>
-              <div>Questions must be at least 20 characters long</div>
-              <div>at least 20 characters</div>
-              <div> screen name </div>
-              <div><textarea value = {queScrNm} onChange ={onChangeQueScrNm}> </textarea></div>
-              <div>this name will be displayed with your answer</div>
-              <div> by submitting I agree to the q&a guidelines
-              <button onClick = {handleCancel}>cancel</button>
-              <button onClick = {submitQuestion}>submit question</button>
-              </div> </div>) : ''}
+            toggleQuestion? (<div> <AskQuestion question={question} onChangeQue={onChangeQue} queScrNm={queScrNm} onChangeQueScrNm={onChangeQueScrNm} handleCancel={handleCancel} submitQuestion={submitQuestion} /></div>) : ''}
+         </div>
          </div>
          </div>
       </div>

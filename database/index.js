@@ -51,31 +51,46 @@ let find = (productId, callback) => {
 }
 
 //retrieve data for a specific product_id
-let saveQuestion = (productId, callback) => {
+let saveQuestion = ({productId, queObj}, callback) => {
 
-  var query =QaModel.find({"productId":productId},(err, data) => {
+  QaModel.findOneAndUpdate({'productId':productId},{
+  $push:{'questions': {$each:[queObj], $position:0}}},(err, data)=>{
     if(err) {
-      console.log(err);
+      callback(err);
     } else {
-      //console.log(JSON.stringify(data));
       callback(data);
     }
   });
-
   //.sort({watchersCount:-1}).limit(25);
 }
 
 //retrieve data for a specific product_id
-let saveAnswer = (productId, callback) => {
+let saveAnswer = ({productId, questionId, ansObj}, callback) => {
 
-  var query =QaModel.find({"productId":productId},(err, data) => {
-    if(err) {
-      console.log(err);
-    } else {
-      //console.log(JSON.stringify(data));
-      callback(data);
-    }
-  });
+  QaModel.findOneAndUpdate({'productId':productId},{
+    $push:{'questions.$[elem].answers': {$each:[ansObj], $position:0}}},  { arrayFilters: [{ 'elem.questionId': questionId}] },(err, data)=>{
+      if(err) {
+        callback(err);
+      } else {
+        callback(data);
+      }
+    });
+
+  //.sort({watchersCount:-1}).limit(25);
+}
+
+let saveFlag = ({productId, questionId, answerId, flag}, callback) => {
+
+  updateField =`questions.$[elem].answers.$[ans].${flag}`;
+
+  QaModel.findOneAndUpdate({'productId':productId},{
+    $inc:{updateField: 1}},  { arrayFilters: [{'elem.questionId': questionId}, {'ans.answerId': answerId}] },(err, data)=>{
+      if(err) {
+        callback(err);
+      } else {
+        callback(data);
+      }
+    });
 
   //.sort({watchersCount:-1}).limit(25);
 }
