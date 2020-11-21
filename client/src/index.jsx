@@ -50,7 +50,7 @@ class App extends React.Component {
   }
 
   getData(sortBy) {
-    var url =`http://localhost:3001/api${window.location.pathname}/getData`;
+    var url =`http://localhost:3001${window.location.pathname}getData`;
     console.log(url);
     axios.get(url )
     .then((response) => {
@@ -91,18 +91,17 @@ class App extends React.Component {
     var newQuestions = [queObj];
     newQuestions = newQuestions.concat(questions12);
 
-    this.setState({toggleAnswer: false, question: '',
+    this.setState({toggleQuestion: false, question: '',
     queScrNm: '', questions: newQuestions}, ()=>{console.log('question inside setstate', this.state)});
 
-    axios.post(`http://localhost:3001/api${window.location.pathname}`, queObj)
+    axios.post(`http://localhost:3001${window.location.pathname}question`, queObj)
     .then((response) => {
       console.log(response.data);
-      this.setState({questions: []});
-      this.setState({questions: questions});
     })
     .catch((err) => {
       console.log(err);
     })
+
 
   }
 
