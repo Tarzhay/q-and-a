@@ -1,11 +1,13 @@
 import React from 'react';
 import Answer from './Answer.jsx';
+import AnswerIt from './AnswerIt.jsx';
+import today from './Today.js';
+import axios from 'axios';
 
 class Question extends React.Component {
 
   constructor(props) {
     super(props);
-    this.question = props.question;
     this.state ={
       toggleAnswer: false,
       answer: '',
@@ -17,7 +19,10 @@ class Question extends React.Component {
     this.submitAnswer = this.submitAnswer.bind(this);
     this.onChangeAns = this.onChangeAns.bind(this);
     this.onChangeAnsScrNm = this.onChangeAnsScrNm.bind(this);
+    this.handleHelp = this.handleHelp.bind(this);
+
   }
+
 
   handleAnswer() {
     this.setState({toggleAnswer: true});
@@ -35,26 +40,33 @@ class Question extends React.Component {
     this.setState({ansScrNm: e.target.value});
   }
 
-  submitAnswer() {
-     //do something
-    //read teh content in the text box
-    //send the question, screen name, date tot he server
-    //inside the server update the product's question array with a new question based on the product ID
+  handleHelp(flag, answerId) {
 
-    var question = this.question;
+    // var question = this.question;
+    // var questionId = question.questionId;
+    // var answers = question[question.length - questionId].answers;
+    // question[question.length - questionId].answers[answers.length - answersId][flag]++;
+
+    // axios.post(`http://localhost:3000${window.location.pathname}/api/Q_A/flag`, {questionId: questionId, answerId: answerId, flag:flag})
+    // .then((response) => {
+    //   console.log(response.data);
+    //   this.setState({question: question});
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // })
+
+  }
+
+  submitAnswer() {
+
+    var question = this.props.question;
 
     console.log(question);
     var questionId = question.questionId;
     var answerId = question.answers.length + 1;
     var answer = this.state.answer;
     var ansScrNm = this.state.ansScrNm;
-
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
-
-    today = yyyy + '-' + mm + '-' + dd;
 
     var ansObj = {_id: answerId,
     answerId: answerId,
@@ -69,7 +81,7 @@ class Question extends React.Component {
     this.setState({toggleAnswer: false, answer: '',
     ansScrNm: ''});
 
-    axios.post(`http://localhost:3000/${window.location.pathname}/api/Q_A/answer`, {questionId: questionId, ansObj: ansObj})
+    axios.post(`http://localhost:3001${window.location.pathname}answer`, {questionId: questionId, ansObj: ansObj})
     .then((response) => {
       console.log(response.data);
       this.setState({question: question});
@@ -83,7 +95,7 @@ class Question extends React.Component {
 
 
   render() {
-    var question = this.question;
+    var question = this.props.question;
     var toggleAnswer = this.state.toggleAnswer;
     var answer = this.state.answer;
     var ansScrNm = this.state.ansScrNm;
@@ -92,27 +104,20 @@ class Question extends React.Component {
     var submitAnswer = this.submitAnswer;
     var onChangeAns = this.onChangeAns;
     var onChangeAnsScrNm = this.onChangeAnsScrNm;
+    var handleHelp = this.handleHelp;
 
     return (
-      <div>
-      <div>Q: {question.question}</div>
-      <div> {question.createdBy}</div>
-      <div> {question.createdAt}</div>
-      <div>{question.answers.map((answer) => (<Answer answer ={answer} />))}</div>
-      <button onClick = {handleAnswer}>Answer it</button>
+      <div className='que-cont'>
+      <div  className='bold'>Q: {question.question}</div>
+      <div className ='que-line2'> {question.createdBy}
+       - {question.createdAt}</div>
+      <div>{question.answers.map((answer) => (<Answer answer ={answer} handleHelp ={handleHelp} />))}</div>
+      <button className ='white-btnans-btn' onClick = {handleAnswer}>Answer it</button>
       <div>
         {toggleAnswer ?
-          (<div><div> your answer </div>
-          <div><textarea  value = {answer} onChange ={onChangeAns}> </textarea></div>
-          <div>Answers must be at least 20 characters long </div>
-          <div>at least 20 characters</div>
-          <div> screen name </div>
-          <div><textarea  value = {ansScrNm} onChange ={onChangeAnsScrNm}> </textarea></div>
-          <div>this name will be displayed with your answer</div>
-          <div> by submitting I agree to the q&a guidelines
-          <button onClick = {handleCancel}>cancel</button>
-          <button onClick = {submitAnswer}>submit answer</button>
-          </div></div>)
+          (<div>
+            <AnswerIt answer ={answer} onChangeAns ={onChangeAns} ansScrNm ={ansScrNm} onChangeAnsScrNm={onChangeAnsScrNm} handleCancel={handleCancel} submitAnswer={submitAnswer}/>
+          </div>)
          :
             ''
          }

@@ -1,14 +1,15 @@
 import React from 'react';
 
-var Answer = ({answer}) => {
+var Answer = ({answer, handleHelp}) => {
 
   return (
-    <div>
-      <div>A: {answer.answer}</div>
-      <div> {answer.createBy}</div>
-      <div> {answer.createAt}</div>
-      <div>helpful ({answer.helpful})</div>
-      <div>not helpful ({answer.notHelpful})</div>
+    <div className='ans-cont'>
+      <div><span className='bold'>A: </span>{answer.answer}</div>
+      <div>
+      <span className ='ans-line2'> <span>{answer.createBy}</span> -  {answer.createAt}</span>
+      <span className ='ans-line2' onClick ={handleHelp('helpful', answer.answerId)}> Helpful ({answer.helpful}) </span>
+      <span className ='ans-line2' onClick ={handleHelp('notHelpful', answer.answerId)}>Not helpful ({answer.notHelpful}) </span>
+      </div>
     </div>
     );
 
