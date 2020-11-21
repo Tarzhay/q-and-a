@@ -8,7 +8,6 @@ class Question extends React.Component {
 
   constructor(props) {
     super(props);
-    this.question = props.question;
     this.state ={
       toggleAnswer: false,
       answer: '',
@@ -23,6 +22,7 @@ class Question extends React.Component {
     this.handleHelp = this.handleHelp.bind(this);
 
   }
+
 
   handleAnswer() {
     this.setState({toggleAnswer: true});
@@ -60,7 +60,7 @@ class Question extends React.Component {
 
   submitAnswer() {
 
-    var question = this.question;
+    var question = this.props.question;
 
     console.log(question);
     var questionId = question.questionId;
@@ -95,7 +95,7 @@ class Question extends React.Component {
 
 
   render() {
-    var question = this.question;
+    var question = this.props.question;
     var toggleAnswer = this.state.toggleAnswer;
     var answer = this.state.answer;
     var ansScrNm = this.state.ansScrNm;

@@ -13,9 +13,11 @@ class App extends React.Component {
 
     this.state ={
       questions: data[0].questions,
+      bkpQuestions: [],
       toggleQuestion: false,
       question: '',
-      queScrNm: ''
+      queScrNm: '',
+      sortBy: ''
     };
     this.handleQuestion = this.handleQuestion.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
@@ -23,6 +25,7 @@ class App extends React.Component {
     this.onChangeQue = this.onChangeQue.bind(this);
     this.onChangeQueScrNm = this.onChangeQueScrNm.bind(this);
     this.getData = this.getData.bind(this);
+    this.onChangeFilter = this.onChangeFilter.bind(this);
   }
 
   handleQuestion() {
@@ -41,15 +44,28 @@ class App extends React.Component {
     this.setState({queScrNm: e.target.value});
   }
 
-  getData(lowerLimit) {
-    axios.get(`http://localhost:3000${window.location.pathname}/api/Q_A/question`, queObj)
+  onChangeFilter(e) {
+    this.getData(e.target.value);
+    this.setState({sortBy: e.target.value});
+  }
+
+  getData(sortBy) {
+    var url =`http://localhost:3001/api${window.location.pathname}/getData`;
+    console.log(url);
+    axios.get(url )
     .then((response) => {
-      console.log(response.data);
-      this.setState({questions: response.data});
+      console.log(response.data.questions);
+      this.setState({questions:response.data.questions});
     })
     .catch((err) => {
       console.log(err);
     })
+  }
+
+  componentDidMount() {
+
+    console.log('I am in did mount');
+    this.getData();
   }
 
   submitQuestion() {
@@ -58,8 +74,8 @@ class App extends React.Component {
     //send the question, screen name, date tot he server
     //inside the server update the product's question array with a new question based on the product ID
 
-    var questions = this.state.questions;
-    var questionId = questions.length + 1;
+    var questions12 = Array.prototype.slice.call(this.state.questions);
+    var questionId = questions12.length + 1;
     var question = this.state.question;
     var queScrNm = this.state.queScrNm;
 
@@ -72,50 +88,62 @@ class App extends React.Component {
       answers: []
     };
 
-    //console.log('queObj',queObj);
+    var newQuestions = [queObj];
+    newQuestions = newQuestions.concat(questions12);
 
-    questions.push(queObj);
-    this.setState({questions: questions});
     this.setState({toggleAnswer: false, question: '',
-    queScrNm: ''});
+    queScrNm: '', questions: newQuestions}, ()=>{console.log('question inside setstate', this.state)});
 
-    //console.log('questions',questions);
-
-    axios.post(`http://localhost:3000${window.location.pathname}/api/Q_A`, queObj)
+    axios.post(`http://localhost:3001/api${window.location.pathname}`, queObj)
     .then((response) => {
       console.log(response.data);
+      this.setState({questions: []});
       this.setState({questions: questions});
     })
     .catch((err) => {
       console.log(err);
     })
-    this.setState({toggleQuestion: false});
+
   }
+
+
 
   render() {
     var questions = this.state.questions;
     var toggleQuestion = this.state.toggleQuestion;
-    var question = this.state.question;
+    var question1 = this.state.question;
     var queScrNm = this.state.queScrNm;
     var handleQuestion = this.handleQuestion;
     var handleCancel = this.handleCancel;
     var submitQuestion = this.submitQuestion;
     var onChangeQue = this.onChangeQue;
     var onChangeQueScrNm = this.onChangeQueScrNm;
-
-    console.log('render questions', questions);
-
+    var onChangeFilter = this.onChangeFilter;
 
     return (
       <div className = 'qa-parent'>
         <div className = 'qa-child'>
         <div className ='qa bold'> Q&A</div>
+        <div id="filterBox">
+      <br></br>
+      <label className="filterSorter">
+        <b>Sort by</b>
+        <select className="marginLeft" name="sortBy" onChange={
+        onChangeFilter}>
+            <option className='white-btnans-btn' value='newestquestion'>newest question</option>
+            <option className='white-btnans-btn'  value='newestanswer'>newest answer</option>
+            <option className='white-btnans-btn'  value='fewestanswer'>fewest answer</option>
+            <option className='white-btnans-btn'  value='mostanswer'>most answer</option>
+        </select>
+      </label>
+      </div>
         <div>
-          {questions.map((question) => (<Question question = {question} />))}
+          {questions.map((question) =>
+           (<Question question = {question} />))}
           <button className='white-btn'>Load more questions</button>
           <button className='red-btn' onClick = {handleQuestion}>Ask a question</button>
           <div>{
-            toggleQuestion? (<div> <AskQuestion question={question} onChangeQue={onChangeQue} queScrNm={queScrNm} onChangeQueScrNm={onChangeQueScrNm} handleCancel={handleCancel} submitQuestion={submitQuestion} /></div>) : ''}
+            toggleQuestion? (<div> <AskQuestion question={question1} onChangeQue={onChangeQue} queScrNm={queScrNm} onChangeQueScrNm={onChangeQueScrNm} handleCancel={handleCancel} submitQuestion={submitQuestion} /></div>) : ''}
          </div>
          </div>
          </div>
@@ -125,4 +153,4 @@ class App extends React.Component {
 }
 
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('service1'));

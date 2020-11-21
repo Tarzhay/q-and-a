@@ -1,12 +1,13 @@
 import React from 'react';
 
 var AnswerIt = ({answer, onChangeAns, ansScrNm, onChangeAnsScrNm, handleCancel, submitAnswer}) => {
+  // <div className ='que-line2'>Answers must be at least 20 characters long </div>
 
   return (
     <div className='ans-text'>
             <div className='bold'> your answer </div>
           <div><textarea className ='text'  value = {answer} onChange ={onChangeAns}> </textarea></div>
-          <div className ='que-line2'>Answers must be at least 20 characters long </div>
+
           <div className ='que-line2'>at least 20 characters</div>
           <div className ='que-line2'> screen name </div>
           <div><textarea className ='ScrName'  value = {ansScrNm} onChange ={onChangeAnsScrNm}> </textarea></div>

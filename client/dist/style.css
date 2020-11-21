@@ -85,3 +85,17 @@ textarea{
 .text{
   height: 100px;
 }
+
+.filterSorter {
+  margin-left: 800px;
+  height: 30px;
+  width: 70px;
+}
+.marginLeft{
+  margin-left: 20px;
+  border-color: rgb(214, 211, 211);
+  background-color: #ffffff;
+  color: rgb(51, 51, 51);
+  height: 25px;
+  border-radius: 5px;
+}

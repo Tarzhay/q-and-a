@@ -36,7 +36,7 @@ const QaModel = mongoose.model('QaModel', qaSchema);
 
 
 //retrieve data for a specific product_id
-let find = (productId, callback) => {
+let find = ({productId, sortby}, callback) => {
 
   var query =QaModel.find({"productId":productId},(err, data) => {
     if(err) {
@@ -45,7 +45,7 @@ let find = (productId, callback) => {
       //console.log(JSON.stringify(data));
       callback(data);
     }
-  });
+  }).sort({'questions.createdAt': 'desc'});
 
   //.sort({watchersCount:-1}).limit(25);
 }
