@@ -73,7 +73,7 @@ class Question extends React.Component {
     this.setState({toggleAnswer: false, answer: '',
     ansScrNm: ''});
 
-    axios.post(`http://localhost:3001${window.location.pathname}answer`, {questionId: questionId, ansObj: ansObj})
+    axios.post(`/api${window.location.pathname}answer`, {questionId: questionId, ansObj: ansObj})
     .then((response) => {
       console.log(response.data);
       this.setState({question: question});

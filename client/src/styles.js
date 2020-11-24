@@ -1,8 +1,10 @@
+import styled,{createGlobalStyle} from 'styled-components';
+
+export const GlobalStyle = createGlobalStyle`
 .wrapper {
   display: flex;
   flex-flow: row wrap;
 }
-
 html,body {
   background-color: rgb(255, 255, 255);
   height: 100%;
@@ -115,3 +117,4 @@ textarea{
 .pagination-cont{
   height: 30px;
 }
+`;

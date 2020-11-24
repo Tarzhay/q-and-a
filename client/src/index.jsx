@@ -5,7 +5,8 @@ import Question from './Question.jsx';
 import AskQuestion from './AskQuestion.jsx';
 import axios from 'axios';
 import today from './Today.js';
-import sortQuestions from './SortQuestions.js'
+import sortQuestions from './SortQuestions.js';
+import {GlobalStyle} from './styles.js'
 
 
 class App extends React.Component {
@@ -100,7 +101,7 @@ class App extends React.Component {
   }
 
   getData(sortBy) {
-    var url =`${window.location.pathname}getData`;
+    var url =`/api${window.location.pathname}getData`;
     console.log(url);
     axios.get(url )
     .then((response) => {
@@ -145,7 +146,7 @@ class App extends React.Component {
     this.setState({toggleQuestion: false, question: '',
     queScrNm: '', questions: newQuestions}, ()=>{console.log('question inside setstate', this.state)});
 
-    axios.post(`http://localhost:3001${window.location.pathname}question`, queObj)
+    axios.post(`/api${window.location.pathname}question`, queObj)
     .then((response) => {
       console.log(response.data);
     })
@@ -170,7 +171,9 @@ class App extends React.Component {
     var style = togglePagination?  'red-btn-long' : 'red-btn';
 
     return (
-      <div className = 'qa-parent'>
+
+        <div className = 'qa-parent'>
+          <GlobalStyle/>
         <div className = 'qa-child'>
         <div className ='qa bold'> Q&A ({questions.length})</div>
         <div id="filterBox">
@@ -207,6 +210,7 @@ class App extends React.Component {
          </div>
         </div>
       </div>
+
     );
   }
 }

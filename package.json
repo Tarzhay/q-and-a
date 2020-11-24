@@ -28,8 +28,8 @@
     "mongoose": "^5.8.5",
     "mysql": "^2.14.1",
     "querystring": "^0.2.0",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "styled-components": "^5.2.1",
     "underscore": "^1.8.3"
   }
