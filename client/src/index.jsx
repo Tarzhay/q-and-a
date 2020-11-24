@@ -5,6 +5,8 @@ import Question from './Question.jsx';
 import AskQuestion from './AskQuestion.jsx';
 import axios from 'axios';
 import today from './Today.js';
+import sortQuestions from './SortQuestions.js';
+import {GlobalStyle} from './styles.js'
 
 
 class App extends React.Component {
@@ -12,9 +14,12 @@ class App extends React.Component {
     super(props);
 
     this.state ={
-      questions: data[0].questions,
+      allQuestions: data[0].questions,
+      questions: data[0].questions.slice(0,2),
       bkpQuestions: [],
       toggleQuestion: false,
+      togglePagination: false,
+      paginationLowerLimit: 0,
       question: '',
       queScrNm: '',
       sortBy: ''
@@ -22,10 +27,10 @@ class App extends React.Component {
     this.handleQuestion = this.handleQuestion.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.submitQuestion = this.submitQuestion.bind(this);
-    this.onChangeQue = this.onChangeQue.bind(this);
-    this.onChangeQueScrNm = this.onChangeQueScrNm.bind(this);
     this.getData = this.getData.bind(this);
-    this.onChangeFilter = this.onChangeFilter.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handlePagination = this.handlePagination.bind(this);
+
   }
 
   handleQuestion() {
@@ -36,21 +41,67 @@ class App extends React.Component {
     this.setState({toggleQuestion: false});
   }
 
-  onChangeQue(e) {
-    this.setState({question: e.target.value});
+  handlePagination(action) {
+
+    var {allQuestions, questions, paginationLowerLimit} = this.state;
+    var newLowerLimit;
+
+    if (action === 'togglePagination') {
+
+      this.setState({togglePagination:true});
+      newLowerLimit = 0;
+
+    } else if (action === 'first') {
+
+      newLowerLimit = 0;
+
+    } else if (action === 'previous') {
+
+      newLowerLimit = paginationLowerLimit - 2;
+
+    } else if (action === 'next') {
+
+      newLowerLimit = paginationLowerLimit + 2;
+
+    } else if (action === 'last') {
+
+      newLowerLimit = (allQuestions.length%2) ? (allQuestions.length -1) : (allQuestions.length -2);
+
+    }
+
+    questions = allQuestions.slice(newLowerLimit, newLowerLimit + 2);
+
+    console.log('I am here', questions);
+    console.log('I am here', newLowerLimit);
+    console.log('I am here', allQuestions);
+
+    if (questions.length > 0) {
+      this.setState({questions:questions, paginationLowerLimit: newLowerLimit});
+    }
+    if (action  === 'first') {
+      this.setState({togglePagination:false});
+    }
+
   }
 
-  onChangeQueScrNm(e) {
-    this.setState({queScrNm: e.target.value});
-  }
+  handleInputChange(event, name) {
+    var value = event.target.value;
 
-  onChangeFilter(e) {
-    this.getData(e.target.value);
-    this.setState({sortBy: e.target.value});
+    console.log('name:' + name + ' value:' +value);
+
+    this.setState({
+      [name]:value
+    });
+
+    if ([event.target.name] ='sortBy') {
+      var sortedResult = sortQuestions(event.target.value, this.state.allQuestions);
+      console.log(this.state.questions);
+      this.setState({allQuestions: sortedResult, paginationLowerLimit: 0, togglePagination: false, questions: sortedResult.slice(0,2)});
+    }
   }
 
   getData(sortBy) {
-    var url =`http://localhost:3001${window.location.pathname}getData`;
+    var url =`/api${window.location.pathname}getData`;
     console.log(url);
     axios.get(url )
     .then((response) => {
@@ -63,7 +114,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-
     console.log('I am in did mount');
     this.getData();
   }
@@ -78,6 +128,8 @@ class App extends React.Component {
     var questionId = questions12.length + 1;
     var question = this.state.question;
     var queScrNm = this.state.queScrNm;
+
+    console.log('question', question);
 
     var queObj = {
       _id: questionId,
@@ -94,7 +146,7 @@ class App extends React.Component {
     this.setState({toggleQuestion: false, question: '',
     queScrNm: '', questions: newQuestions}, ()=>{console.log('question inside setstate', this.state)});
 
-    axios.post(`http://localhost:3001${window.location.pathname}question`, queObj)
+    axios.post(`/api${window.location.pathname}question`, queObj)
     .then((response) => {
       console.log(response.data);
     })
@@ -110,25 +162,25 @@ class App extends React.Component {
   render() {
     var questions = this.state.questions;
     var toggleQuestion = this.state.toggleQuestion;
-    var question1 = this.state.question;
-    var queScrNm = this.state.queScrNm;
     var handleQuestion = this.handleQuestion;
     var handleCancel = this.handleCancel;
     var submitQuestion = this.submitQuestion;
-    var onChangeQue = this.onChangeQue;
-    var onChangeQueScrNm = this.onChangeQueScrNm;
-    var onChangeFilter = this.onChangeFilter;
+    var handleInputChange = this.handleInputChange;
+    var handlePagination = this.handlePagination;
+    var togglePagination = this.state.togglePagination;
+    var style = togglePagination?  'red-btn-long' : 'red-btn';
 
     return (
-      <div className = 'qa-parent'>
+
+        <div className = 'qa-parent'>
+          <GlobalStyle/>
         <div className = 'qa-child'>
-        <div className ='qa bold'> Q&A</div>
+        <div className ='qa bold'> Q&A ({questions.length})</div>
         <div id="filterBox">
       <br></br>
       <label className="filterSorter">
         <b>Sort by</b>
-        <select className="marginLeft" name="sortBy" onChange={
-        onChangeFilter}>
+        <select className="marginLeft" name="sortBy" onChange={(e) => {handleInputChange(e, 'sortBy')}}>
             <option className='white-btnans-btn' value='newestquestion'>newest question</option>
             <option className='white-btnans-btn'  value='newestanswer'>newest answer</option>
             <option className='white-btnans-btn'  value='fewestanswer'>fewest answer</option>
@@ -137,19 +189,31 @@ class App extends React.Component {
       </label>
       </div>
         <div>
-          {questions.map((question) =>
-           (<Question question = {question} />))}
-          <button className='white-btn'>Load more questions</button>
-          <button className='red-btn' onClick = {handleQuestion}>Ask a question</button>
-          <div>{
-            toggleQuestion? (<div> <AskQuestion question={question1} onChangeQue={onChangeQue} queScrNm={queScrNm} onChangeQueScrNm={onChangeQueScrNm} handleCancel={handleCancel} submitQuestion={submitQuestion} /></div>) : ''}
+            {questions.map((question) => (<Question question = {question} />))}
+              {
+                togglePagination? (<div className = 'pagination-cont'>
+                                        <span className = 'pagination-left' onClick = {() => {handlePagination('first')}}>&lt;&lt;&lt;</span>
+                                        <span className = 'pagination' onClick = {() => {handlePagination('previous')}}>&lt;</span>
+                                        <span className = 'pagination' onClick = {() => {handlePagination('next')}}>&gt;</span>
+                                        <span className = 'pagination' onClick = {() => {handlePagination('last')}}>&gt;&gt;&gt;</span>
+                                  </div>)
+                                  :
+                                  (<button className='white-btn' onClick = {() => {handlePagination('togglePagination', 0)}} > Load more questions </button>)
+              }
+
+            <button className={style} onClick = {handleQuestion}>Ask a question</button>
+
+            <div>{
+              toggleQuestion? (<div> <AskQuestion handleInputChange={handleInputChange}  handleCancel={handleCancel} submitQuestion={submitQuestion} /></div>) : ''}
+            </div>
+
          </div>
-         </div>
-         </div>
+        </div>
       </div>
+
     );
   }
 }
 
 
-ReactDOM.render(<App />, document.getElementById('service1'));
+ReactDOM.render(<App />, document.getElementById('service2'));

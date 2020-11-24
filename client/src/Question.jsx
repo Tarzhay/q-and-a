@@ -17,8 +17,7 @@ class Question extends React.Component {
     this.handleAnswer = this.handleAnswer.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.submitAnswer = this.submitAnswer.bind(this);
-    this.onChangeAns = this.onChangeAns.bind(this);
-    this.onChangeAnsScrNm = this.onChangeAnsScrNm.bind(this);
+    this.handleInputChangeAns = this.handleInputChangeAns.bind(this);
     this.handleHelp = this.handleHelp.bind(this);
 
   }
@@ -32,35 +31,28 @@ class Question extends React.Component {
     this.setState({toggleAnswer: false});
   }
 
-  onChangeAns(e) {
-    this.setState({answer: e.target.value});
+  handleInputChangeAns(event, name) {
+    console.log(name);
+    this.setState({
+      [name]: event.target.value
+    });
+
   }
 
-  onChangeAnsScrNm(e) {
-    this.setState({ansScrNm: e.target.value});
-  }
+  handleHelp(flag, answerInd) {
+    var question = this.props.question;
+    console.log('handleHelp', question);
+    console.log('handleHelp', answerInd);
+    console.log('handleHelp', flag);
 
-  handleHelp(flag, answerId) {
-
-    // var question = this.question;
-    // var questionId = question.questionId;
-    // var answers = question[question.length - questionId].answers;
-    // question[question.length - questionId].answers[answers.length - answersId][flag]++;
-
-    // axios.post(`http://localhost:3000${window.location.pathname}/api/Q_A/flag`, {questionId: questionId, answerId: answerId, flag:flag})
-    // .then((response) => {
-    //   console.log(response.data);
-    //   this.setState({question: question});
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // })
-
+    question.answers[answerInd][flag] = question.answers[answerInd][flag] +1;
+    this.setState({question: question});
   }
 
   submitAnswer() {
 
     var question = this.props.question;
+    console.log('submitAnswer', question);
 
     console.log(question);
     var questionId = question.questionId;
@@ -81,7 +73,7 @@ class Question extends React.Component {
     this.setState({toggleAnswer: false, answer: '',
     ansScrNm: ''});
 
-    axios.post(`http://localhost:3001${window.location.pathname}answer`, {questionId: questionId, ansObj: ansObj})
+    axios.post(`/api${window.location.pathname}answer`, {questionId: questionId, ansObj: ansObj})
     .then((response) => {
       console.log(response.data);
       this.setState({question: question});
@@ -97,13 +89,10 @@ class Question extends React.Component {
   render() {
     var question = this.props.question;
     var toggleAnswer = this.state.toggleAnswer;
-    var answer = this.state.answer;
-    var ansScrNm = this.state.ansScrNm;
+    var handleInputChangeAns = this.handleInputChangeAns;
     var handleAnswer = this.handleAnswer;
     var handleCancel = this.handleCancel;
     var submitAnswer = this.submitAnswer;
-    var onChangeAns = this.onChangeAns;
-    var onChangeAnsScrNm = this.onChangeAnsScrNm;
     var handleHelp = this.handleHelp;
 
     return (
@@ -111,12 +100,12 @@ class Question extends React.Component {
       <div  className='bold'>Q: {question.question}</div>
       <div className ='que-line2'> {question.createdBy}
        - {question.createdAt}</div>
-      <div>{question.answers.map((answer) => (<Answer answer ={answer} handleHelp ={handleHelp} />))}</div>
+      <div>{question.answers.map((answer, ind) => (<Answer answer ={answer} handleHelp ={handleHelp} ind={ind}/>))}</div>
       <button className ='white-btnans-btn' onClick = {handleAnswer}>Answer it</button>
       <div>
         {toggleAnswer ?
           (<div>
-            <AnswerIt answer ={answer} onChangeAns ={onChangeAns} ansScrNm ={ansScrNm} onChangeAnsScrNm={onChangeAnsScrNm} handleCancel={handleCancel} submitAnswer={submitAnswer}/>
+            <AnswerIt handleInputChangeAns ={handleInputChangeAns} handleCancel={handleCancel} submitAnswer={submitAnswer}/>
           </div>)
          :
             ''

@@ -1,8 +1,10 @@
+import styled,{createGlobalStyle} from 'styled-components';
+
+export const GlobalStyle = createGlobalStyle`
 .wrapper {
   display: flex;
   flex-flow: row wrap;
 }
-
 html,body {
   background-color: rgb(255, 255, 255);
   height: 100%;
@@ -28,13 +30,19 @@ button{
   line-height: 1.42857;
   border-radius: 5px;
   font-size: 10px;
-  width: 470px;
+  width: 500px;
   height: 30px;
 }
 .red-btn{
   color: rgb(255, 255, 255);
   background-color: rgb(204, 0, 0);
   border-color: rgb(204, 0, 0);
+}
+.red-btn-long {
+  color: rgb(255, 255, 255);
+  background-color: rgb(204, 0, 0);
+  border-color: rgb(204, 0, 0);
+  width: 1000px;
 }
 .white-btn {
   border-color: #f7f7f7;
@@ -99,3 +107,14 @@ textarea{
   height: 25px;
   border-radius: 5px;
 }
+.pagination-left{
+  margin-left: 350px;
+}
+.pagination{
+  margin: 30px;
+
+}
+.pagination-cont{
+  height: 30px;
+}
+`;

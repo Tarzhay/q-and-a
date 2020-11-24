@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const {MONGO_URI} = require('../config/db.js');
 
-mongoose.connect('mongodb://localhost/FEC', {useNewUrlParser: true});
+console.log(MONGO_URI);
+
+//mongoose.connect('mongodb://localhost/FEC', {useNewUrlParser: true});
+mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
+
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

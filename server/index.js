@@ -7,21 +7,26 @@ const querystring = require('querystring');
 const port = 3001;
 
 //app.use('/', express.static(__dirname + '/../client/dist'));
-//app.use('/', express.static(__dirname + '/../client/dist'));
-app.use('/api/:id', express.static(__dirname + '/../client/dist'));
+// app.use(express.static(__dirname + '/../client/dist'));
+// app.use('/', express.static(__dirname + '/../client/dist'));
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use('/:id', express.static(__dirname + '/../client/dist'));
 
 
-app.get('/api/:id/file', (req, res) => {
-  console.log('I am here');
-  console.log(__dirname + '/../client/dist/index.html');
-  var options = {
-    root: path.join(__dirname, '/../client/dist')
-  }
-  var pathdir =path.join(__dirname, '/../client/dist/index.html')
-  res.sendFile(pathdir);
-})
+app.get('/:id', (req, res) => { res.sendFile(path.join(__dirname + '/../client/dist/index.html')); })
+
+
+// app.get('/api/:id/file', (req, res) => {
+//   console.log('I am here');
+//   console.log(__dirname + '/../client/dist/index.html');
+//   var options = {
+//     root: path.join(__dirname, '/../client/dist')
+//   }
+//   var pathdir =path.join(__dirname, '/../client/dist/index.html')
+//   res.sendFile(pathdir);
+// })
 
 
 //Retrieve Question and Answer information

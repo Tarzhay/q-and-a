@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 const {sampleQAData} = require('./sample_data.js');
+const {MONGO_URI} = require ('./config/db.js');
 
-mongoose.connect('mongodb://localhost/FEC', {useNewUrlParser: true});
+console.log(MONGO_URI);
+
+mongoose.connect(MONGO_URI, {useNewUrlParser: true,  useUnifiedTopology: true});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -50,7 +53,7 @@ const seed = () => {
   });
 }
 
-mongoose.connect('mongodb://localhost/FEC', {
+mongoose.connect(MONGO_URI, {
   useUnifiedTopology: true,
   useNewUrlParser: true
 })
