@@ -73,7 +73,7 @@ class Question extends React.Component {
     this.setState({toggleAnswer: false, answer: '',
     ansScrNm: ''});
 
-    axios.post(`/api${window.location.pathname}answer`, {questionId: questionId, ansObj: ansObj})
+    axios.post(`/api/answer${window.location.pathname}`, {questionId: questionId, ansObj: ansObj})
     .then((response) => {
       console.log(response.data);
       this.setState({question: question});
@@ -101,7 +101,7 @@ class Question extends React.Component {
       <div className ='que-line2'> {question.createdBy}
        - {question.createdAt}</div>
       <div>{question.answers.map((answer, ind) => (<Answer answer ={answer} handleHelp ={handleHelp} ind={ind}/>))}</div>
-      <button className ='white-btnans-btn' onClick = {handleAnswer}>Answer it</button>
+      <button className ='btn white-btnans-btn' onClick = {handleAnswer}>Answer it</button>
       <div>
         {toggleAnswer ?
           (<div>
