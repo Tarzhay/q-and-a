@@ -161,6 +161,7 @@ class App extends React.Component {
 
   render() {
     var questions = this.state.questions;
+    var questions = this.state.questions;
     var toggleQuestion = this.state.toggleQuestion;
     var handleQuestion = this.handleQuestion;
     var handleCancel = this.handleCancel;
@@ -175,7 +176,7 @@ class App extends React.Component {
         <div className = 'qa-parent'>
           <GlobalStyle/>
         <div className = 'qa-child'>
-        <div className ='qa bold'> Q&A ({questions.length})</div>
+        <div className ='qa bold'> Q&A ({allQuestions.length})</div>
         <div id="filterBox">
       <br></br>
       <label className="filterSorter">
