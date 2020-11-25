@@ -13,9 +13,9 @@ var AnswerIt = ({ handleInputChangeAns, handleCancel, submitAnswer}) => {
           <div><textarea className ='ScrName'  onChange ={(e) => {handleInputChangeAns(e, 'ansScrNm')}} name ='ansScrNm'> </textarea></div>
           <div className ='que-line2'> this name will be displayed with your answer</div>
           <div className ='que-line2'> by submitting I agree to the q&a guidelines</div>
-          <div>
-            <button className ='white-btn' onClick = {handleCancel}>cancel</button>
-            <button className='red-btn' onClick = {submitAnswer}>submit answer</button>
+          <div className ='ans-btn-cont'>
+            <button className ='btn white-btn' onClick = {handleCancel}>cancel</button>
+            <button className='btn red-btn' onClick = {submitAnswer}>submit answer</button>
           </div>
     </div>
   );

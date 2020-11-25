@@ -43,7 +43,7 @@ const QaModel = mongoose.model('QaModel', qaSchema);
 //retrieve data for a specific product_id
 let find = ({productId, sortby}, callback) => {
 
-  var query =QaModel.find({"productId":productId},(err, data) => {
+  QaModel.find({"productId":productId},(err, data) => {
     if(err) {
       console.log(err);
     } else {

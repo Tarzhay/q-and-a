@@ -26,11 +26,15 @@ html,body {
   background-color: rgb(247, 247, 247);
   margin: 0px;
 }
-button{
+.ans-btn-cont{
+  display: flex;
+
+}
+.btn{
   line-height: 1.42857;
   border-radius: 5px;
   font-size: 10px;
-  width: 500px;
+  width: 50%;
   height: 30px;
 }
 .red-btn{
@@ -59,7 +63,6 @@ button{
   margin: 7px;
   color: rgb(102, 102, 102);
 }
-
 .ans-cont, .que-cont {
   margin: 8px;
   background-color: rgb(247, 247, 247);
@@ -118,3 +121,5 @@ textarea{
   height: 30px;
 }
 `;
+
+//width: 500px;

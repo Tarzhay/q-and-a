@@ -3,7 +3,6 @@ let app = express();
 let db = require('../database/index.js');
 var bodyParser = require('body-parser');
 var path = require('path');
-const querystring = require('querystring');
 const port = 3001;
 
 //app.use('/', express.static(__dirname + '/../client/dist'));
@@ -12,6 +11,9 @@ const port = 3001;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+
+app.use(express.static(__dirname + '/../client/dist'));
 app.use('/:id', express.static(__dirname + '/../client/dist'));
 
 
@@ -30,7 +32,7 @@ app.get('/:id', (req, res) => { res.sendFile(path.join(__dirname + '/../client/d
 
 
 //Retrieve Question and Answer information
-app.get('/api/:id/getData', function (req, res) {
+app.get('/api/getData/:id/', function (req, res) {
   console.log(req.params.id);
   var productId = req.params.id;
   //console.log(req.params);
@@ -43,7 +45,7 @@ app.get('/api/:id/getData', function (req, res) {
   });
 });
 
-app.post('/api/:id/question', function (req, res) {
+app.post('/api/question/:id/', function (req, res) {
   //console.log(req);
   var productId = req.params.id;
   var queObj = req.body;
@@ -54,7 +56,7 @@ app.post('/api/:id/question', function (req, res) {
   });
 });
 
-app.post('/api/:id/answer', function (req, res) {
+app.post('/api/answer/:id/', function (req, res) {
   //console.log(req);
   var productId = req.params.id;
   var {questionId} = req.body;
@@ -66,7 +68,7 @@ app.post('/api/:id/answer', function (req, res) {
   });
 });
 
-app.post('/api/:id/flag', function (req, res) {
+app.post('/api/flag/:id/', function (req, res) {
   //console.log(req);
   var productId = req.params.id;
   var {questionId} = req.body;

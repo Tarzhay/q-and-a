@@ -101,7 +101,7 @@ class App extends React.Component {
   }
 
   getData(sortBy) {
-    var url =`/api${window.location.pathname}getData`;
+    var url =`/api/getData${window.location.pathname}`;
     console.log(url);
     axios.get(url )
     .then((response) => {
@@ -146,7 +146,7 @@ class App extends React.Component {
     this.setState({toggleQuestion: false, question: '',
     queScrNm: '', questions: newQuestions}, ()=>{console.log('question inside setstate', this.state)});
 
-    axios.post(`/api${window.location.pathname}question`, queObj)
+    axios.post(`/api/question${window.location.pathname}`, queObj)
     .then((response) => {
       console.log(response.data);
     })
@@ -168,7 +168,7 @@ class App extends React.Component {
     var handleInputChange = this.handleInputChange;
     var handlePagination = this.handlePagination;
     var togglePagination = this.state.togglePagination;
-    var style = togglePagination?  'red-btn-long' : 'red-btn';
+    var style = togglePagination?  'btn red-btn-long' : 'btn red-btn';
 
     return (
 
@@ -198,7 +198,7 @@ class App extends React.Component {
                                         <span className = 'pagination' onClick = {() => {handlePagination('last')}}>&gt;&gt;&gt;</span>
                                   </div>)
                                   :
-                                  (<button className='white-btn' onClick = {() => {handlePagination('togglePagination', 0)}} > Load more questions </button>)
+                                  (<button className='btn white-btn' onClick = {() => {handlePagination('togglePagination', 0)}} > Load more questions </button>)
               }
 
             <button className={style} onClick = {handleQuestion}>Ask a question</button>
