@@ -106,7 +106,7 @@ class App extends React.Component {
     axios.get(url )
     .then((response) => {
       console.log(response.data.questions);
-      this.setState({questions:response.data.questions});
+      this.setState({allQuestions:response.data.questions, questions: response.data.questions.slice(0,2) });
     })
     .catch((err) => {
       console.log(err);
