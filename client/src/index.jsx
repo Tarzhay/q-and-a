@@ -160,7 +160,7 @@ class App extends React.Component {
 
 
   render() {
-    var questions = this.state.questions;
+    var allQuestions = this.state.allQuestions;
     var questions = this.state.questions;
     var toggleQuestion = this.state.toggleQuestion;
     var handleQuestion = this.handleQuestion;
