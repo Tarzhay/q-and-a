@@ -1,5 +1,11 @@
 # Questions and Answers API Endpoints
 
+[Create Questions] (#create-questions)
+[Create Answers] (#create-answers)
+[Update Helpful or Not Helpful Flags] (#update-helpful-or-not-helpful-flags)
+[Read Questions and Answers] (#read-questions-and-answers)
+[Delete Questions and Answers] (#delete-questions-and-answers)
+
 ## Create Questions
 
 Users are able to save questions related to a product.
