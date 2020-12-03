@@ -4,7 +4,7 @@
 
 Users are able to save questions related to a product.
 
-```POST** /api/:id/questions```
+```POST /api/:id/questions```
 
 ### Parameters
 
@@ -26,8 +26,8 @@ Returns the posted question.
 
 ### Status codes
 
-**200:** Successfully post the question
-**404:** Unsuccessful attempt due to missing resource
+* **200:** Successfully post the question
+* **404:** Unsuccessful attempt due to missing resource
 
 ## Create Answers
 
@@ -57,8 +57,8 @@ Returns the posted answer.
 
 ### Status codes
 
-- **200:** Successfully post the answer
-- **404:** Unsuccessful attempt due to missing resource
+* **200:** Successfully post the answer
+* **404:** Unsuccessful attempt due to missing resource
 
 ## Update Helpful or Not Helpful flags
 
@@ -68,9 +68,9 @@ Users are able to flag the answers.
 
 ### Parameters
 
-- *questionId:* The question to which the answer was provided.
-- *answerId:* The answer to which the flag was marked.
-- *Flag:* helpful or notHelpful
+* *questionId:* The question to which the answer was provided.
+* *answerId:* The answer to which the flag was marked.
+* *Flag:* helpful or notHelpful
 
 ### Returns
 
@@ -86,8 +86,8 @@ Returns the flag details.
 
 ### Status codes
 
-- **200:** Successfully post the helpful or not helpful flag
-- **404:** Unsuccessful attempt due to missing resource
+* **200:** Successfully post the helpful or not helpful flag
+* **404:** Unsuccessful attempt due to missing resource
 
 ## Read Questions and Answers
 
@@ -97,11 +97,11 @@ Question and Answers are uploaded once the Q&A tab is clicked
 
 ### Parameters
 
-- *sort by:* newest answers, newest questions, fewest answers, most answers
+* *sort by:* newest answers, newest questions, fewest answers, most answers
 
 ### Returns
 
-Returns the sorted list of question and answer.
+Returns the sorted list of questions and answers.
 
 ```javascript
 {
@@ -125,8 +125,8 @@ Returns the sorted list of question and answer.
 
 ### Status codes
 
-- **200:** Successfully post the helpful or not helpful flag
-- **404:** Unsuccessful attempt due to missing resource
+* **200:** Successfully post the helpful or not helpful flag
+* **404:** Unsuccessful attempt due to missing resource
 
 ## Delete Questions and Answers
 
@@ -144,5 +144,5 @@ None
 
 ### Status codes
 
-- **200:** Successfully delete the questions and answers
-- **404:** Unsuccessful attempt due to missing resource
+* **200:** Successfully delete the questions and answers
+* **404:** Unsuccessful attempt due to missing resource
