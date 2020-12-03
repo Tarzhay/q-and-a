@@ -32,7 +32,6 @@ class Question extends React.Component {
   }
 
   handleInputChangeAns(event, name) {
-    console.log(name);
     this.setState({
       [name]: event.target.value
     });
@@ -41,10 +40,6 @@ class Question extends React.Component {
 
   handleHelp(flag, answerInd) {
     var question = this.props.question;
-    console.log('handleHelp', question);
-    console.log('handleHelp', answerInd);
-    console.log('handleHelp', flag);
-
     question.answers[answerInd][flag] = question.answers[answerInd][flag] +1;
     this.setState({question: question});
   }
@@ -52,9 +47,6 @@ class Question extends React.Component {
   submitAnswer() {
 
     var question = this.props.question;
-    console.log('submitAnswer', question);
-
-    console.log(question);
     var questionId = question.questionId;
     var answerId = question.answers.length + 1;
     var answer = this.state.answer;
@@ -73,9 +65,9 @@ class Question extends React.Component {
     this.setState({toggleAnswer: false, answer: '',
     ansScrNm: ''});
 
-    axios.post(`/api/answer${window.location.pathname}`, {questionId: questionId, ansObj: ansObj})
+
+    axios.post(`/api${window.location.pathname}answers`, {questionId: questionId, ansObj: ansObj})
     .then((response) => {
-      console.log(response.data);
       this.setState({question: question});
     })
     .catch((err) => {

@@ -32,51 +32,37 @@ app.get('/:id', (req, res) => { res.sendFile(path.join(__dirname + '/../client/d
 
 
 //Retrieve Question and Answer information
-app.get('/api/getData/:id/', function (req, res) {
-  console.log(req.params.id);
+app.get('/api/:id/q-and-a', function (req, res) {
   var productId = req.params.id;
-  //console.log(req.params);
-  console.log(req.query);
   var {sortby}= req.query;
-  //console.log(req.body);
   db.find({productId: productId, sortby:sortby}, (qa) => {
-    console.log('I am here', qa.length);
     res.send(qa[0]);
   });
 });
 
-app.post('/api/question/:id/', function (req, res) {
-  //console.log(req);
+app.post('/api/:id/questions', function (req, res) {
   var productId = req.params.id;
   var queObj = req.body;
-  console.log('queObj', queObj);
   db.saveQuestion({productId:productId, queObj:queObj}, (qa) => {
-    console.log('I am here', qa.length);
     res.send(qa);
   });
 });
 
-app.post('/api/answer/:id/', function (req, res) {
-  //console.log(req);
+app.post('/api/:id/answers', function (req, res) {
   var productId = req.params.id;
   var {questionId} = req.body;
   var {ansObj} = req.body;
-  console.log('ansObj', req.body);
   db.saveAnswer({productId:productId, questionId:questionId, ansObj:ansObj}, (qa) => {
-    console.log('I am here', qa.length);
     res.send(qa);
   });
 });
 
-app.post('/api/flag/:id/', function (req, res) {
-  //console.log(req);
+app.post('/api/:id/flag', function (req, res) {
   var productId = req.params.id;
   var {questionId} = req.body;
   var {answerId} = req.body;
   var {flag} = req.body;
-  console.log('ansObj', req.body);
   db.saveFlag({productId:productId, questionId:questionId, answerId:answerId, flag:flag}, (qa) => {
-    console.log('I am here', qa.length);
     res.send(qa);
   });
 });

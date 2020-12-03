@@ -196,8 +196,5 @@ const data =
     ]
   }
 ];
-//console.log(sampleQAData);
-
-//module.exports = {sampleQAData: sampleQAData} ;
 
 export default data;

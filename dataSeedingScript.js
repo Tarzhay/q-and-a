@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const {sampleQAData} = require('./sample_data.js');
-const {MONGO_URI} = require ('./config/db.js');
-
-console.log(MONGO_URI);
+//const {MONGO_URI} = require ('./config/db.js');
+const MONGO_URI = 'mongodb://localhost/target';
 
 mongoose.connect(MONGO_URI, {useNewUrlParser: true,  useUnifiedTopology: true});
 

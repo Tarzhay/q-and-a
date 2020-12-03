@@ -1,7 +1,5 @@
 var sortQuestions = (sortBy, questions) => {
 
-  console.log('I am here',sortBy);
-
   var sortedQuestions = questions.slice();
 
   if (sortBy === 'mostanswer') {
@@ -18,7 +16,6 @@ var sortQuestions = (sortBy, questions) => {
 
   } else if (sortBy === 'fewestanswer') {
     //least Answered
-    console.log('I am here');
     sortedQuestions.sort((a, b) => {
       if (a.answers.length < b.answers.length) {
         return -1;
@@ -44,7 +41,6 @@ var sortQuestions = (sortBy, questions) => {
     //recent Answer
 
     sortedQuestions.sort((a, b) => {
-      console.log((a.answers[0].createAt > b.answers[0].createAt));
       if (a.answers[0].createAt > b.answers[0].createAt) {
         return -1;
       }

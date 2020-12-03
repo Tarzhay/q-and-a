@@ -71,10 +71,6 @@ class App extends React.Component {
 
     questions = allQuestions.slice(newLowerLimit, newLowerLimit + 2);
 
-    console.log('I am here', questions);
-    console.log('I am here', newLowerLimit);
-    console.log('I am here', allQuestions);
-
     if (questions.length > 0) {
       this.setState({questions:questions, paginationLowerLimit: newLowerLimit});
     }
@@ -87,25 +83,20 @@ class App extends React.Component {
   handleInputChange(event, name) {
     var value = event.target.value;
 
-    console.log('name:' + name + ' value:' +value);
-
     this.setState({
       [name]:value
     });
 
     if ([event.target.name] ='sortBy') {
       var sortedResult = sortQuestions(event.target.value, this.state.allQuestions);
-      console.log(this.state.questions);
       this.setState({allQuestions: sortedResult, paginationLowerLimit: 0, togglePagination: false, questions: sortedResult.slice(0,2)});
     }
   }
 
   getData(sortBy) {
-    var url =`/api/getData${window.location.pathname}`;
-    console.log(url);
-    axios.get(url )
+    var url =`/api${window.location.pathname}q-and-a`;
+    axios.get(url)
     .then((response) => {
-      console.log(response.data.questions);
       this.setState({allQuestions:response.data.questions, questions: response.data.questions.slice(0,2) });
     })
     .catch((err) => {
@@ -114,7 +105,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log('I am in did mount');
     this.getData();
   }
 
@@ -128,8 +118,6 @@ class App extends React.Component {
     var questionId = questions12.length + 1;
     var question = this.state.question;
     var queScrNm = this.state.queScrNm;
-
-    console.log('question', question);
 
     var queObj = {
       _id: questionId,
@@ -146,18 +134,12 @@ class App extends React.Component {
     this.setState({toggleQuestion: false, question: '',
     queScrNm: '', questions: newQuestions}, ()=>{console.log('question inside setstate', this.state)});
 
-    axios.post(`/api/question${window.location.pathname}`, queObj)
-    .then((response) => {
-      console.log(response.data);
-    })
-    .catch((err) => {
+    try {
+      axios.post(`/api${window.location.pathname}questions`, queObj)
+    } catch(err) {
       console.log(err);
-    })
-
-
+    }
   }
-
-
 
   render() {
     var allQuestions = this.state.allQuestions;

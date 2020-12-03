@@ -1,10 +1,8 @@
 const mongoose = require('mongoose');
-const {MONGO_URI} = require('../config/db.js');
+//const {MONGO_URI} = require('../config/db.js');
 
-console.log(MONGO_URI);
-
-//mongoose.connect('mongodb://localhost/FEC', {useNewUrlParser: true});
-mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://localhost/target', {useNewUrlParser: true});
+//mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const db = mongoose.connection;
