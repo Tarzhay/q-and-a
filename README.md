@@ -10,9 +10,9 @@
 
 Users are able to save questions related to a product.
 
-```POST /api/:id/questions```
+```POST /api/products/:id/questions```
 
-### Parameters
+### Path Parameters
 
 None
 
@@ -39,7 +39,7 @@ Returns the posted question.
 
 Users are able to save answers related to a product.
 
-```POST /api/:id/answers```
+```POST /api/products/:id/answers```
 
 ### Parameters
 
@@ -70,7 +70,7 @@ Returns the posted answer.
 
 Users are able to flag the answers.
 
-```PUT /api/:id/flag```
+```PUT /api/products/:id/flag```
 
 ### Parameters
 
@@ -99,7 +99,7 @@ Returns the flag details.
 
 Question and Answers are uploaded once the Q&A tab is clicked
 
-```GET /api/:id/q-and-a```
+```GET /api/products/:id/q-and-a```
 
 ### Parameters
 
@@ -138,7 +138,7 @@ Returns the sorted list of questions and answers.
 
 Users are able to delete questions and answers.
 
-```DELETE /api/:id/q-and-a```
+```DELETE /api/products/:id/q-and-a```
 
 ### Parameters
 
