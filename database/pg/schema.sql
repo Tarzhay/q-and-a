@@ -15,7 +15,7 @@ CREATE TABLE products (
 
 CREATE TABLE questions (
   question_id serial PRIMARY KEY,
-  product_id integer REFERENCES products (productId),
+  product_id integer REFERENCES products (product_id),
   question text NOT NULL,
   created_by varchar(100) NOT NULL,
   created_at date DEFAULT now()
@@ -23,7 +23,7 @@ CREATE TABLE questions (
 
 CREATE TABLE answers (
   answer_id serial PRIMARY KEY,
-  question_id integer REFERENCES questions (questionId),
+  question_id integer REFERENCES questions (question_id),
   answer text NOT NULL,
   created_by varchar(100) NOT NULL,
   created_at date DEFAULT now(),
@@ -31,6 +31,7 @@ CREATE TABLE answers (
   not_helpful smallint DEFAULT 0
 );
 
+/*
 COPY products(product_id, name, brand, price, avgg_review, total_reviews)
 FROM '/Users/dnguyen/hack/q-and-a/database/pg/products.csv'
 DELIMITER ','
@@ -45,3 +46,4 @@ COPY answers(answer_id, question_id, answer, created_by, created_at, helpful, no
 FROM '/Users/dnguyen/hack/q-and-a/database/pg/answers.csv'
 DELIMITER ','
 CSV HEADER;
+*/
