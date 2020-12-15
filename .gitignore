@@ -10,3 +10,7 @@ products2.json
 cli.txt
 
 newrelic_agent.log
+
+*.env
+
+newrelic.js
