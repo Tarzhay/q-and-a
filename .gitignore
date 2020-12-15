@@ -8,3 +8,5 @@ products2.json
 .DS_Store
 
 cli.txt
+
+newrelic_agent.log
