@@ -1,72 +1,85 @@
 const express = require('express');
-let app = express();
-let db = require('../database/index.js');
-var bodyParser = require('body-parser');
-var path = require('path');
-const port = 3001;
+const bodyParser = require('body-parser');
+const path = require('path');
+const newrelic = require('newrelic');
 
-//app.use('/', express.static(__dirname + '/../client/dist'));
-// app.use(express.static(__dirname + '/../client/dist'));
-// app.use('/', express.static(__dirname + '/../client/dist'));
+const db = require('../database/pg/index.js');
+
+const app = express();
+const port = 3002;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
 app.use(express.static(__dirname + '/../client/dist'));
 app.use('/:id', express.static(__dirname + '/../client/dist'));
 
+app.get('/:id', (req, res) => {
+  res.sendFile(path.join(__dirname + '/../client/dist/index.html'));
+});
 
-app.get('/:id', (req, res) => { res.sendFile(path.join(__dirname + '/../client/dist/index.html')); })
-
-
-// app.get('/api/:id/file', (req, res) => {
-//   console.log('I am here');
-//   console.log(__dirname + '/../client/dist/index.html');
-//   var options = {
-//     root: path.join(__dirname, '/../client/dist')
-//   }
-//   var pathdir =path.join(__dirname, '/../client/dist/index.html')
-//   res.sendFile(pathdir);
-// })
-
-
-//Retrieve Question and Answer information
-app.get('/api/:id/q-and-a', function (req, res) {
-  var productId = req.params.id;
-  var {sortby}= req.query;
-  db.find({productId: productId, sortby:sortby}, (qa) => {
-    res.send(qa[0]);
+app.get('/api/q-and-a/:id', function (req, res) {
+  let product_id = req.params.id;
+  db.getAll(product_id, (err, results) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.status(200).send(results).end();
+    }
   });
 });
 
-app.post('/api/:id/questions', function (req, res) {
-  var productId = req.params.id;
-  var queObj = req.body;
-  db.saveQuestion({productId:productId, queObj:queObj}, (qa) => {
-    res.send(qa);
+app.post('/api/q-and-a/:id/question', function (req, res) {
+  let product_id = req.params.id;
+  let questionObj = req.body;
+
+  db.addQuestion(product_id, questionObj, (err, response) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.status(200).send(response).end();
+    }
   });
 });
 
-app.post('/api/:id/answers', function (req, res) {
-  var productId = req.params.id;
-  var {questionId} = req.body;
-  var {ansObj} = req.body;
-  db.saveAnswer({productId:productId, questionId:questionId, ansObj:ansObj}, (qa) => {
-    res.send(qa);
+app.post('/api/q-and-a/:id/answer', function (req, res) {
+  let {
+    question_id,
+    answerObj
+  } = req.body;
+
+  db.addAnswer(question_id, answerObj, (err, response) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.status(200).send(response).end();
+    }
   });
 });
 
-app.post('/api/:id/flag', function (req, res) {
-  var productId = req.params.id;
-  var {questionId} = req.body;
-  var {answerId} = req.body;
-  var {flag} = req.body;
-  db.saveFlag({productId:productId, questionId:questionId, answerId:answerId, flag:flag}, (qa) => {
-    res.send(qa);
-  });
+app.post('/api/q-and-a/:id/flag', function (req, res) {
+  let product_id = req.params.id;
+  let {
+    question_id,
+    answer_id,
+    flag
+  } = req.body;
+
+  db.updateFlag(
+    product_id,
+    question_id,
+    answerId,
+    flag,
+    (err, response) => {
+      if (err) {
+        res.sendStatus(500);
+      } else {
+        res.status(200).send(response).end();
+      }
+    },
+  );
 });
 
-app.listen(port, function() {
+app.listen(port, function () {
   console.log(`listening on port ${port}`);
 });

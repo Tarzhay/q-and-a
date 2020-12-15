@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server/index.js",
-    "build": "webpack --watch"
+    "build": "webpack --watch --mode development"
   },
   "author": "Duy Nguyen",
   "license": "None",
@@ -15,8 +15,10 @@
     "bootstrap": "^3.3.7",
     "couchbase": "^3.1.0",
     "express": "^4.17.1",
+    "faker": "^5.1.0",
     "jquery": "^3.2.1",
     "mongoose": "^5.8.5",
+    "newrelic": "^7.0.2",
     "ottoman": "^2.0.0-alpha.8",
     "pg": "^8.5.1",
     "querystring": "^0.2.0",
@@ -31,6 +33,10 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.12.5",
     "babel-loader": "^8.2.1",
+    "eslint": "^7.15.0",
+    "eslint-config-prettier": "^7.0.0",
+    "eslint-plugin-prettier": "^3.2.0",
+    "eslint-plugin-react": "^7.21.5",
     "nodemon": "^2.0.6",
     "webpack": "^5.5.1",
     "webpack-cli": "^4.2.0"

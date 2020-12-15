@@ -1,1 +1,10 @@
 node_modules
+
+*.csv
+
+products.json
+products2.json
+
+.DS_Store
+
+cli.txt

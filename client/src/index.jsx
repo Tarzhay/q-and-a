@@ -4,25 +4,22 @@ import data from '../sample_data_v1_2r.js';
 import Question from './Question.jsx';
 import AskQuestion from './AskQuestion.jsx';
 import axios from 'axios';
-import today from './Today.js';
-import sortQuestions from './SortQuestions.js';
-import {GlobalStyle} from './styles.js'
-
+import { GlobalStyle } from './styles.js';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state ={
+    this.state = {
       allQuestions: data[0].questions,
-      questions: data[0].questions.slice(0,2),
+      questions: data[0].questions.slice(0, 2),
       bkpQuestions: [],
       toggleQuestion: false,
       togglePagination: false,
       paginationLowerLimit: 0,
       question: '',
       queScrNm: '',
-      sortBy: ''
+      sortBy: '',
     };
     this.handleQuestion = this.handleQuestion.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
@@ -30,78 +27,88 @@ class App extends React.Component {
     this.getData = this.getData.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handlePagination = this.handlePagination.bind(this);
-
   }
 
   handleQuestion() {
-    this.setState({toggleQuestion: true});
+    this.setState({ toggleQuestion: true });
   }
 
   handleCancel() {
-    this.setState({toggleQuestion: false});
+    this.setState({ toggleQuestion: false });
   }
 
   handlePagination(action) {
-
-    var {allQuestions, questions, paginationLowerLimit} = this.state;
-    var newLowerLimit;
+    let {
+      allQuestions,
+      questions,
+      paginationLowerLimit,
+    } = this.state;
+    let newLowerLimit;
 
     if (action === 'togglePagination') {
-
-      this.setState({togglePagination:true});
+      this.setState({ togglePagination: true });
       newLowerLimit = 0;
-
     } else if (action === 'first') {
-
       newLowerLimit = 0;
-
     } else if (action === 'previous') {
-
       newLowerLimit = paginationLowerLimit - 2;
-
     } else if (action === 'next') {
-
       newLowerLimit = paginationLowerLimit + 2;
-
     } else if (action === 'last') {
-
-      newLowerLimit = (allQuestions.length%2) ? (allQuestions.length -1) : (allQuestions.length -2);
-
+      newLowerLimit =
+        allQuestions.length % 2
+          ? allQuestions.length - 1
+          : allQuestions.length - 2;
     }
 
     questions = allQuestions.slice(newLowerLimit, newLowerLimit + 2);
 
     if (questions.length > 0) {
-      this.setState({questions:questions, paginationLowerLimit: newLowerLimit});
+      this.setState({
+        questions: questions,
+        paginationLowerLimit: newLowerLimit,
+      });
     }
-    if (action  === 'first') {
-      this.setState({togglePagination:false});
+    if (action === 'first') {
+      this.setState({ togglePagination: false });
     }
-
   }
 
-  handleInputChange(event, name) {
-    var value = event.target.value;
+  handleInputChange(event) {
+    let { name, value } = event.target;
 
     this.setState({
-      [name]:value
+      [name]: value,
     });
 
-    if ([event.target.name] ='sortBy') {
-      var sortedResult = sortQuestions(event.target.value, this.state.allQuestions);
-      this.setState({allQuestions: sortedResult, paginationLowerLimit: 0, togglePagination: false, questions: sortedResult.slice(0,2)});
+    if (name === 'sortBy') {
+      let sortedResult = this.sortQuestions(
+        value,
+        this.state.allQuestions,
+      );
+      this.setState({
+        allQuestions: sortedResult,
+        paginationLowerLimit: 0,
+        togglePagination: false,
+        questions: sortedResult.slice(0, 2),
+      });
     }
   }
 
-  getData(sortBy) {
-    var url =`/api${window.location.pathname}q-and-a`;
-    axios.get(url)
-    .then((response) => {
-      this.setState({allQuestions:response.data.questions, questions: response.data.questions.slice(0,2) });
-    })
-    .catch((err) => {
-      console.log(err);
-    })
+  getData() {
+    let url = `/api/q-and-a${window.location.pathname}`;
+
+    axios
+      .get(url)
+      .then((response) => {
+        this.setState({
+          allQuestions: response.data.rows[0].questions,
+          questions: response.data.rows[0].questions.slice(0, 2),
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   componentDidMount() {
@@ -109,94 +116,218 @@ class App extends React.Component {
   }
 
   submitQuestion() {
-    //do something
-    //read teh content in the text box
-    //send the question, screen name, date tot he server
-    //inside the server update the product's question array with a new question based on the product ID
-
-    var questions12 = Array.prototype.slice.call(this.state.questions);
-    var questionId = questions12.length + 1;
-    var question = this.state.question;
-    var queScrNm = this.state.queScrNm;
-
-    var queObj = {
-      _id: questionId,
-      questionId: questionId,
-      question: question,
-      createdBy: queScrNm,
-      createdAt: today,
-      answers: []
+    let questionQuery = {
+      question: this.state.question,
+      created_by: this.state.queScrNm,
     };
 
-    var newQuestions = [queObj];
-    newQuestions = newQuestions.concat(questions12);
+    axios
+      .post(`/api/q-and-a${window.location.pathname}/question`, questionQuery)
+      .then((response) => {
+        let question = response.data.rows[0];
 
-    this.setState({toggleQuestion: false, question: '',
-    queScrNm: '', questions: newQuestions}, ()=>{console.log('question inside setstate', this.state)});
+        this.setState({
+          toggleQuestion: false,
+          question: '',
+          queScrNm: '',
+          questions: [question].concat(this.state.questions),
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
-    try {
-      axios.post(`/api${window.location.pathname}questions`, queObj)
-    } catch(err) {
-      console.log(err);
+  sortQuestions(sortBy, questions) {
+    let sortedQuestions = questions.slice();
+
+    switch (sortBy) {
+      case 'mostanswers':
+        sortedQuestions.sort((a, b) => {
+          let x = a.answers ? a.answers.length : 0;
+          let y = b.answers ? b.answers.length : 0;
+
+          if (x > y) {
+            return -1;
+          }
+          if (x < y) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      case 'fewestanswers':
+        sortedQuestions.sort((a, b) => {
+          let x = a.answers ? a.answers.length : 0;
+          let y = b.answers ? b.answers.length : 0;
+          if (x < y) {
+            return -1;
+          }
+          if (x > y) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      case 'newestanswers':
+        sortedQuestions.sort((a, b) => {
+          let x = a.answers ? a.answers[0].created_at : '';
+          let y = b.answers ? b.answers[0].created_at : '';
+
+          if (x > y) {
+            return -1;
+          }
+          if (x < y) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      default:
+        sortedQuestions.sort((a, b) => {
+          let x = a.created_at;
+          let y = b.created_at;
+
+          if (x > y) {
+            return -1;
+          }
+          if (x < y) {
+            return 1;
+          }
+          return 0;
+        });
     }
+    return sortedQuestions;
   }
 
   render() {
-    var allQuestions = this.state.allQuestions;
-    var questions = this.state.questions;
-    var toggleQuestion = this.state.toggleQuestion;
-    var handleQuestion = this.handleQuestion;
-    var handleCancel = this.handleCancel;
-    var submitQuestion = this.submitQuestion;
-    var handleInputChange = this.handleInputChange;
-    var handlePagination = this.handlePagination;
-    var togglePagination = this.state.togglePagination;
-    var style = togglePagination?  'btn red-btn-long' : 'btn red-btn';
+    const {
+      allQuestions,
+      questions,
+      toggleQuestion,
+      togglePagination,
+    } = this.state;
+    let style = togglePagination ? 'btn red-btn-long' : 'btn red-btn';
 
     return (
+      <div className="qa-parent">
+        <GlobalStyle />
+        <div className="qa-child">
+          <div className="qa bold">
+            {' '}
+            Q&amp;A ({allQuestions.length})
+          </div>
+          <div id="filterBox">
+            <br></br>
+            <label className="filterSorter">
+              <b>Sort by</b>
+              <select
+                className="marginLeft"
+                name="sortBy"
+                onChange={(e) => {
+                  this.handleInputChange(e);
+                }}
+              >
+                <option
+                  className="white-btnans-btn"
+                  value="newestquestions"
+                >
+                  newest questions
+                </option>
+                <option
+                  className="white-btnans-btn"
+                  value="newestanswers"
+                >
+                  newest answers
+                </option>
+                <option
+                  className="white-btnans-btn"
+                  value="fewestanswers"
+                >
+                  fewest answers
+                </option>
+                <option
+                  className="white-btnans-btn"
+                  value="mostanswers"
+                >
+                  most answers
+                </option>
+              </select>
+            </label>
+          </div>
+          <div>
+            {questions.map((question) => (
+              <Question question={question} />
+            ))}
+            {togglePagination ? (
+              <div className="pagination-cont">
+                <span
+                  className="pagination-left"
+                  onClick={() => {
+                    this.handlePagination('first');
+                  }}
+                >
+                  &lt;&lt;&lt;
+                </span>
+                <span
+                  className="pagination"
+                  onClick={() => {
+                    this.handlePagination('previous');
+                  }}
+                >
+                  &lt;
+                </span>
+                <span
+                  className="pagination"
+                  onClick={() => {
+                    this.handlePagination('next');
+                  }}
+                >
+                  &gt;
+                </span>
+                <span
+                  className="pagination"
+                  onClick={() => {
+                    this.handlePagination('last');
+                  }}
+                >
+                  &gt;&gt;&gt;
+                </span>
+              </div>
+            ) : (
+              <button
+                className="btn white-btn"
+                onClick={() => {
+                  this.handlePagination('togglePagination', 0);
+                }}
+              >
+                Load more questions
+              </button>
+            )}
 
-        <div className = 'qa-parent'>
-          <GlobalStyle/>
-        <div className = 'qa-child'>
-        <div className ='qa bold'> Q&A ({allQuestions.length})</div>
-        <div id="filterBox">
-      <br></br>
-      <label className="filterSorter">
-        <b>Sort by</b>
-        <select className="marginLeft" name="sortBy" onChange={(e) => {handleInputChange(e, 'sortBy')}}>
-            <option className='white-btnans-btn' value='newestquestion'>newest question</option>
-            <option className='white-btnans-btn'  value='newestanswer'>newest answer</option>
-            <option className='white-btnans-btn'  value='fewestanswer'>fewest answer</option>
-            <option className='white-btnans-btn'  value='mostanswer'>most answer</option>
-        </select>
-      </label>
-      </div>
-        <div>
-            {questions.map((question) => (<Question question = {question} />))}
-              {
-                togglePagination? (<div className = 'pagination-cont'>
-                                        <span className = 'pagination-left' onClick = {() => {handlePagination('first')}}>&lt;&lt;&lt;</span>
-                                        <span className = 'pagination' onClick = {() => {handlePagination('previous')}}>&lt;</span>
-                                        <span className = 'pagination' onClick = {() => {handlePagination('next')}}>&gt;</span>
-                                        <span className = 'pagination' onClick = {() => {handlePagination('last')}}>&gt;&gt;&gt;</span>
-                                  </div>)
-                                  :
-                                  (<button className='btn white-btn' onClick = {() => {handlePagination('togglePagination', 0)}} > Load more questions </button>)
-              }
+            <button className={style} onClick={this.handleQuestion}>
+              Ask a question
+            </button>
 
-            <button className={style} onClick = {handleQuestion}>Ask a question</button>
-
-            <div>{
-              toggleQuestion? (<div> <AskQuestion handleInputChange={handleInputChange}  handleCancel={handleCancel} submitQuestion={submitQuestion} /></div>) : ''}
+            <div>
+              {toggleQuestion ? (
+                <div>
+                  {' '}
+                  <AskQuestion
+                    handleInputChange={this.handleInputChange}
+                    handleCancel={this.handleCancel}
+                    submitQuestion={this.submitQuestion}
+                  />
+                </div>
+              ) : (
+                ''
+              )}
             </div>
-
-         </div>
+          </div>
         </div>
       </div>
-
     );
   }
 }
-
 
 ReactDOM.render(<App />, document.getElementById('service2'));

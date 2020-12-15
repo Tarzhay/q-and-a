@@ -1,110 +1,122 @@
 import React from 'react';
 import Answer from './Answer.jsx';
 import AnswerIt from './AnswerIt.jsx';
-import today from './Today.js';
 import axios from 'axios';
 
 class Question extends React.Component {
-
   constructor(props) {
     super(props);
-    this.state ={
+    this.state = {
       toggleAnswer: false,
       answer: '',
-      ansScrNm: ''
-    }
-
+      ansScrNm: '',
+    };
     this.handleAnswer = this.handleAnswer.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.submitAnswer = this.submitAnswer.bind(this);
-    this.handleInputChangeAns = this.handleInputChangeAns.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.handleHelp = this.handleHelp.bind(this);
-
   }
 
-
   handleAnswer() {
-    this.setState({toggleAnswer: true});
+    this.setState({ toggleAnswer: true });
   }
 
   handleCancel() {
-    this.setState({toggleAnswer: false});
+    this.setState({ toggleAnswer: false });
   }
 
-  handleInputChangeAns(event, name) {
+  handleInputChange(event) {
     this.setState({
-      [name]: event.target.value
+      [event.target.name]: event.target.value,
     });
-
   }
 
   handleHelp(flag, answerInd) {
     var question = this.props.question;
-    question.answers[answerInd][flag] = question.answers[answerInd][flag] +1;
-    this.setState({question: question});
+    question.answers[answerInd][flag] =
+      question.answers[answerInd][flag] + 1;
+    // TO DO: update database
+
+    this.setState({ question: question });
   }
 
   submitAnswer() {
+    let answerQuery = {
+      answer: this.state.answer,
+      created_by: this.state.ansScrNm,
+    };
 
-    var question = this.props.question;
-    var questionId = question.questionId;
-    var answerId = question.answers.length + 1;
-    var answer = this.state.answer;
-    var ansScrNm = this.state.ansScrNm;
+    axios
+      .post(`/api/q-and-a${window.location.pathname}/answer`, {
+        question_id: this.props.question.question_id,
+        answerObj: answerQuery
+      })
+      .then((response) => {
+        let question = this.props.question;
+        let answer = response.data.rows[0];
 
-    var ansObj = {_id: answerId,
-    answerId: answerId,
-    answer: answer,
-    createBy: ansScrNm,
-    createAt: today,
-    helpful: 0,
-    notHelpful: 0};
+        if (question.answers) {
+          question.answers.unshift(answer);
+        } else {
+          question.answers = [answer];
+        }
+        this.setState({
+          question: question,
+          toggleAnswer: false,
+          answer: '',
+          ansScrNm: '',
+        });
+        this.setState({ question: question });
+      })
+      .catch(error => {
+        console.log(error);
+      });
 
-    question.answers.unshift(ansObj);
-    this.setState({question: question});
-    this.setState({toggleAnswer: false, answer: '',
-    ansScrNm: ''});
-
-
-    axios.post(`/api${window.location.pathname}answers`, {questionId: questionId, ansObj: ansObj})
-    .then((response) => {
-      this.setState({question: question});
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-
-    this.setState({toggleAnswer: false});
+    this.setState({ toggleAnswer: false });
   }
 
-
   render() {
-    var question = this.props.question;
-    var toggleAnswer = this.state.toggleAnswer;
-    var handleInputChangeAns = this.handleInputChangeAns;
-    var handleAnswer = this.handleAnswer;
-    var handleCancel = this.handleCancel;
-    var submitAnswer = this.submitAnswer;
-    var handleHelp = this.handleHelp;
+    let question = this.props.question;
+    let toggleAnswer = this.state.toggleAnswer;
 
     return (
-      <div className='que-cont'>
-      <div  className='bold'>Q: {question.question}</div>
-      <div className ='que-line2'> {question.createdBy}
-       - {question.createdAt}</div>
-      <div>{question.answers.map((answer, ind) => (<Answer answer ={answer} handleHelp ={handleHelp} ind={ind}/>))}</div>
-      <button className ='btn white-btnans-btn' onClick = {handleAnswer}>Answer it</button>
-      <div>
-        {toggleAnswer ?
-          (<div>
-            <AnswerIt handleInputChangeAns ={handleInputChangeAns} handleCancel={handleCancel} submitAnswer={submitAnswer}/>
-          </div>)
-         :
+      <div className="que-cont">
+        <div className="bold">Q: {question.question}</div>
+        <div className="que-line2">
+          {question.created_by} - {question.created_at}
+        </div>
+        <div>
+          {question.answers &&
+            question.answers.length > 0 &&
+            question.answers.map((answer, ind) => (
+              <Answer
+                answer={answer}
+                handleHelp={this.handleHelp}
+                ind={ind}
+              />
+            ))}
+        </div>
+        <button
+          className="btn white-btnans-btn"
+          onClick={this.handleAnswer}
+        >
+          Answer it
+        </button>
+        <div>
+          {toggleAnswer ? (
+            <div>
+              <AnswerIt
+                handleInputChangeAns={this.handleInputChange}
+                handleCancel={this.handleCancel}
+                submitAnswer={this.submitAnswer}
+              />
+            </div>
+          ) : (
             ''
-         }
-       </div>
-
-    </div>
+          )}
+        </div>
+      </div>
     );
   }
 }
