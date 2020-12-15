@@ -1,12 +1,12 @@
 const faker = require('faker');
 const fs = require('fs');
 
-const NUMBER_OF_PRODUCTS = 10;
+const NUMBER_OF_PRODUCTS = 10000000;
 //const NUMBER_OF_PRODUCTS = 10;
 var NUMBER_OF_QUESTIONS = 55009698; // hard-coded here but can be set programmatically by running generateQuestionsCSV()
 const PRODUCTS_CSV = 'products.csv';
 const QUESTIONS_CSV = 'questions.csv';
-const ANSWERS_CSV = 'answers2.csv';
+const ANSWERS_CSV = 'answers.csv';
 
 const generateProductsCSV = () => {
   fs.writeFileSync(PRODUCTS_CSV, 'productId, name, brand, price, avgReview, totalReviews\n');

@@ -25,7 +25,7 @@ export default function () {
   const productId = faker.random.number({ min: 0, max: 9999999 });
 
   // READ
-  let res = http.get(`http://localhost:3001/${productId}`);
+  let res = http.get(`http://100.25.221.255:3002/${productId}`);
   if (res.status !== 200) {
     errors.add(1);
   }

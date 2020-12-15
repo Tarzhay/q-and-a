@@ -31,19 +31,17 @@ CREATE TABLE answers (
   not_helpful smallint DEFAULT 0
 );
 
-/*
-COPY products(product_id, name, brand, price, avgg_review, total_reviews)
-FROM '/Users/dnguyen/hack/q-and-a/database/pg/products.csv'
+COPY products(product_id, name, brand, price, avg_review, total_reviews)
+FROM 'products.csv'
 DELIMITER ','
 CSV HEADER;
 
 COPY questions(question_id, product_id, question, created_by, created_at)
-FROM '/Users/dnguyen/hack/q-and-a/database/pg/questions.csv'
+FROM 'questions.csv'
 DELIMITER ','
 CSV HEADER;
 
 COPY answers(answer_id, question_id, answer, created_by, created_at, helpful, not_helpful)
-FROM '/Users/dnguyen/hack/q-and-a/database/pg/answers.csv'
+FROM 'answers.csv'
 DELIMITER ','
 CSV HEADER;
-*/
