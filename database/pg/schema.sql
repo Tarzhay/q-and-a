@@ -32,16 +32,16 @@ CREATE TABLE answers (
 );
 
 COPY products(product_id, name, brand, price, avg_review, total_reviews)
-FROM 'products.csv'
+FROM './products.csv'
 DELIMITER ','
 CSV HEADER;
 
 COPY questions(question_id, product_id, question, created_by, created_at)
-FROM 'questions.csv'
+FROM './questions.csv'
 DELIMITER ','
 CSV HEADER;
 
 COPY answers(answer_id, question_id, answer, created_by, created_at, helpful, not_helpful)
-FROM 'answers.csv'
+FROM './answers.csv'
 DELIMITER ','
 CSV HEADER;
