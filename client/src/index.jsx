@@ -96,7 +96,7 @@ class App extends React.Component {
   }
 
   getData() {
-    let url = `/api/q-and-a${window.location.pathname}`;
+    let url = `/api/q-and-a/${window.location.pathname.replace(/\//g, '')}`;
 
     axios
       .get(url)
@@ -122,7 +122,7 @@ class App extends React.Component {
     };
 
     axios
-      .post(`/api/q-and-a${window.location.pathname}question`, questionQuery)
+      .post(`/api/q-and-a/${window.location.pathname.replace(/\//g, '')}/question`, questionQuery)
       .then((response) => {
         let question = response.data.rows[0];
 
