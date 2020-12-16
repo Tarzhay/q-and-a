@@ -48,7 +48,7 @@ class Question extends React.Component {
     };
 
     axios
-      .post(`/api/q-and-a${window.location.pathname}/answer`, {
+      .post(`/api/q-and-a${window.location.pathname}answer`, {
         question_id: this.props.question.question_id,
         answerObj: answerQuery
       })

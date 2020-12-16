@@ -122,7 +122,7 @@ class App extends React.Component {
     };
 
     axios
-      .post(`/api/q-and-a${window.location.pathname}/question`, questionQuery)
+      .post(`/api/q-and-a${window.location.pathname}question`, questionQuery)
       .then((response) => {
         let question = response.data.rows[0];
 
