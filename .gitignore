@@ -14,3 +14,5 @@ newrelic_agent.log
 *.env
 
 newrelic.js
+
+package-lock.json
